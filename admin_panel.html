@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #8360c3, #2ebf91);
+      color: #fff;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    input {
+      width: 200px;
+    }
+    button {
+      background: #fff;
+      color: #2ebf91;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Panel - Student Management</h2>
+    <div>
+      <input type="text" id="id" placeholder="Student ID">
+      <input type="text" id="name" placeholder="Name">
+      <input type="text" id="course" placeholder="Course">
+      <input type="text" id="fees" placeholder="Fees">
+      <input type="text" id="deposit" placeholder="Deposit">
+      <input type="text" id="dues" placeholder="Dues">
+      <input type="text" id="attendance" placeholder="Attendance">
+      <input type="text" id="mobile" placeholder="Mobile">
+      <input type="text" id="address" placeholder="Address">
+      <input type="text" id="syllabus" placeholder="Syllabus">
+      <button onclick="addStudent()">Add / Update</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Course</th><th>Fees</th><th>Deposit</th>
+          <th>Dues</th><th>Attendance</th><th>Mobile</th><th>Address</th><th>Syllabus</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const SHEET_URL = "https://script.google.com/macros/s/AKfycbx-z8U3WyVwTzJqoZe9H5UatqKE2O7jphIypL0Q61eZ8XgdeuCfDiyyYws2WsPeilg1/exec";
+
+    function addStudent() {
+      const params = new URLSearchParams({
+        id: document.getElementById('id').value,
+        name: document.getElementById('name').value,
+        course: document.getElementById('course').value,
+        fees: document.getElementById('fees').value,
+        deposit: document.getElementById('deposit').value,
+        dues: document.getElementById('dues').value,
+        attendance: document.getElementById('attendance').value,
+        mobile: document.getElementById('mobile').value,
+        address: document.getElementById('address').value,
+        syllabus: document.getElementById('syllabus').value,
+        mode: 'write'
+      });
+      fetch(`${SHEET_URL}?${params}`)
+        .then(res => res.text())
+        .then(alert);
+    }
+
+    function fetchStudents() {
+      fetch(SHEET_URL + '?mode=all')
+        .then(res => res.json())
+        .then(data => {
+          const tableBody = document.getElementById('tableBody');
+          tableBody.innerHTML = '';
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = row.map(cell => `<td>${cell}</td>`).join('');
+            tableBody.appendChild(tr);
+          });
+        });
+    }
+
+    fetchStudents();
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student View</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #185a9d;
+    }
+    .info {
+      margin-top: 20px;
+    }
+    .info p {
+      font-size: 1.1em;
+      line-height: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Student Dashboard</h2>
+    <div class="info">
+      <p><strong>ID:</strong> <span id="studentId"></span></p>
+      <p><strong>Attendance:</strong> <span id="attendance">Loading...</span></p>
+      <p><strong>Syllabus:</strong> <span id="syllabus">Loading...</span></p>
+    </div>
+  </div>
+
+  <script>
+    const id = new URLSearchParams(window.location.search).get('id');
+    document.getElementById('studentId').textContent = id;
+
+    fetch(`https://script.google.com/macros/s/AKfycbx-z8U3WyVwTzJqoZe9H5UatqKE2O7jphIypL0Q61eZ8XgdeuCfDiyyYws2WsPeilg1/exec?id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('attendance').textContent = "Not found";
+          document.getElementById('syllabus').textContent = "Not found";
+        } else {
+          document.getElementById('attendance').textContent = data.Attendance || "N/A";
+          document.getElementById('syllabus').textContent = data.Syllabus || "N/A";
+        }
+      })
+      .catch(err => {
+        document.getElementById('attendance').textContent = "Error fetching data";
+        document.getElementById('syllabus').textContent = "Error fetching data";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
